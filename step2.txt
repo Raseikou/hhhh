@@ -1,0 +1,48 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+public class Main {
+    public static void main(String []args) {
+        // 替换为实际的CSV文件路径
+        List<Stock> stocks = new ArrayList<>();
+        Path csvFilePath= Paths.get("/Users/shihaoluo/Desktop/output.csv");
+        System.out.println("|"+"============================================================="+"|");
+        System.out.printf("| %-4s | %-25s | %-8s | %-13s |", "Code","Product Name", "Market", "Shares Issued");
+        System.out.println("");
+        System.out.println("|"+"------"+"+"+"---------------------------"+"+"+"----------"+
+                "+"+"---------------"+"|");
+        boolean isFirstLine = true;
+        try (BufferedReader reader = Files.newBufferedReader(csvFilePath,StandardCharsets.UTF_8)) {
+            // 读取数据行并创建Stock对象
+            for (String line;(line= reader.readLine()) != null;) {
+                if (isFirstLine){
+                    isFirstLine=false;
+                    continue;
+                }
+                String[] data = line.split("\t");
+                long shareIssued = Long.parseLong(data[3]);
+                Stock stock = new Stock(data[0], data[1], data[2], shareIssued);
+                stocks.add(stock);
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+        final String DataFormat= "| %-4s | %-25s | %-8s | %,13d |\n";
+        for(Stock stock:stocks){
+            System.out.printf(DataFormat,stock.getCode(),
+                    (stock.getProductName().length() <= 25) ? stock.getProductName() : (stock.getProductName().substring(0, 25- 3) + "..."),
+                    stock.getMarket(),
+                    stock.getShareIssued());}
+
+
+        System.out.println("===============================================================");
+    }
+}

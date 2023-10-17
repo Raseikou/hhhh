@@ -1,0 +1,46 @@
+public class Stock {
+    private String code;
+    private String productName;
+    private String market;
+    private long shareIssued;
+
+    public Stock(String code, String productName, String market, long shareIssued) {
+        this.code = code;
+        this.productName = productName;
+        this.market = market;
+        this.shareIssued = shareIssued;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getMarket() {
+        return market;
+    }
+
+    public void setMarket(String market) {
+        this.market = market;
+    }
+
+    public long getShareIssued() {
+        return shareIssued;
+    }
+
+    public void setShareIssued(long shareIssued) {
+        this.shareIssued = shareIssued;
+    }
+
+}

@@ -1,0 +1,44 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        boolean run = true;
+        String isRunning;
+        Scanner scanner = new Scanner(System.in); // 移动到do循环外部
+
+        while (run) {
+            System.out.println("株式取引システムを開始します。");
+            System.out.println("操作するメニューを選んでください。");
+            System.out.println("1.柄名マスタ一覧表示");
+            System.out.println("2.柄名マスタ新規登録");
+            System.out.println("9.アプリケーションを終了する");
+
+            do {
+                System.out.println("入力してください：");
+                isRunning = scanner.nextLine(); // 使用外部定义的scanner对象来获取输入
+                switch (isRunning) {
+                    case "1":
+                    case "１":
+                        System.out.println("「柄名マスタ一覧表示」が選択されました");
+                        System.out.println("---");
+                        break;
+                    case "2":
+                    case "２":
+                        System.out.println("「柄名マスタ新規登録」が選択されました");
+                        System.out.println("---");
+                        break;
+                    case "9":
+                    case "９":
+                        System.out.println("アプリケーションを終了します。");
+                        run = false;
+                        break;
+                    default:
+                        System.out.println("\"" + isRunning + "\"" + "に対応するメニューは存在しません");
+                }
+            } while (!isRunning.equals("9") && !isRunning.equals("９") && !isRunning.equals("1") && !isRunning.equals("2")
+            && !isRunning.equals("２") && !isRunning.equals("１"));
+        }
+
+        scanner.close(); // 关闭Scanner对象
+    }
+}
