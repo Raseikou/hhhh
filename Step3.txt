@@ -1,0 +1,91 @@
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Stock> stocks = new ArrayList<>();
+        Path csvFilePath = Paths.get("/Users/shihaoluo/Desktop/output.txt" );
+        boolean isFirstLine = true;
+        try (BufferedReader reader = Files.newBufferedReader(csvFilePath, StandardCharsets.UTF_8)) {
+            for (String line; (line = reader.readLine()) != null; ) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+                String[] data = line.split("\t");
+                if (data.length == 4) {
+                    long shareIssued = Long.parseLong(data[3]);
+                    Stock stock = new Stock(data[0], data[1], data[2], shareIssued);
+                    stocks.add(stock);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+        boolean continueEnteringData = true;
+        Scanner scanner = new Scanner(System.in);
+        while (continueEnteringData) {
+            System.out.println("|" + "=============================================================" + "|");
+            System.out.printf("| %-4s | %-25s | %-8s | %-13s |", "Code", "Product Name", "Market", "Shares Issued");
+            System.out.println("");
+            System.out.println("|" + "------" + "+" + "---------------------------" + "+" + "----------" + "+" + "---------------" + "|");
+
+            final String DataFormat = "| %-4s | %-25s | %-8s | %,13d |\n";
+            for (Stock stock : stocks) {
+                System.out.printf(DataFormat, stock.getCode(),
+                        (stock.getProductName().length() <= 25) ? stock.getProductName() : (stock.getProductName().substring(0, 25 - 3) + "..."),
+                        stock.getMarket(),
+                        stock.getShareIssued());
+            }
+
+            System.out.println("===============================================================");
+
+            // 获取用户输入
+            System.out.print("Enter the Code: ");
+            String code = scanner.next();
+
+            System.out.print("Enter the Product Name: ");
+            String productName = scanner.next();
+
+            System.out.print("Enter the Market: ");
+            String market = scanner.next();
+
+            long sharesIssued = 0;
+
+            while (true) {
+                System.out.print("Enter the Shares Issued: ");
+                if (scanner.hasNextLong()) {
+                    sharesIssued = scanner.nextLong();
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter a valid number.");
+                    scanner.next(); // 清除无效输入
+                }
+            }
+
+            // 创建用户输入的Stock对象并添加到列表
+            Stock userStock = new Stock(code, productName, market, sharesIssued);
+            stocks.add(userStock);
+
+            // 将用户输入的数据写入原文件
+            try (FileWriter writer = new FileWriter(csvFilePath.toFile(), true)) {
+                writer.write(String.format("%s\t%s\t%s\t%d\n", userStock.getCode(), userStock.getProductName(), userStock.getMarket(), userStock.getShareIssued()));
+            } catch (IOException e) {
+                System.out.println("Failed to write data to the file: " + e.getMessage());
+            }
+
+            // 输出消息
+            System.out.println(productName + " を新規銘柄として登録しました。");
+
+            continueEnteringData = false; // 输入完毕后立即结束
+        }
+    }
+}
+
